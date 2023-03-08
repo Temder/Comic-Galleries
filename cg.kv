@@ -1,0 +1,256 @@
+#: import NoTransition kivy.uix.screenmanager.NoTransition
+
+<GroundLayout>:
+	carousel: carousel.__self__
+	carouselLbl: carouselLbl.__self__
+	cGrid: cGrid.__self__
+	chapterBox: chapterBox.__self__
+	csGrid: csGrid.__self__
+	flButton: flButton.__self__
+	hideComicsSection: hideComicsSection.__self__
+	hideComicSection: hideComicSection.__self__
+	nav_drawer: nav_drawer.__self__
+	popup: popup.__self__
+	scrollC: scrollC.__self__
+	scrollCs: scrollCs.__self__
+    sm: sm.__self__
+	topAppBar: topAppBar.__self__
+	md_bg_color: 0.25, 0.25, 0.25, 1
+    MDScreen:
+		MDTopAppBar:
+			id: topAppBar
+			title: "Home"
+			elevation: 4
+			pos_hint: {"top": 1}
+			md_bg_color: 0.2, 0.2, 0.2, 1
+			specific_text_color: 1, 1, 1, 1
+			left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
+			right_action_items: [["cog-outline", lambda x: root.goToScreen("settings")]]
+        MDNavigationLayout:
+			ScreenManager:
+				id: sm
+				transition: NoTransition()
+				MDScreen:
+					name: "home"
+					MDBoxLayout:
+						orientation: "vertical"
+						TopAppBarPlaceholder:
+						AnchorLayout:
+							anchor_x: "center"
+							anchor_y: "center"
+							padding: "20dp"
+							MDBoxLayout:
+								orientation: "vertical"
+								adaptive_size: True
+								spacing: "10dp"
+								MDBoxLayout:
+									orientation: "horizontal"
+									adaptive_size: True
+									spacing: "10dp"
+									MDTextField:
+										id: searchInput
+										size_hint: None, None
+										size: "200dp", "30dp"
+										icon_left: "magnify"
+										font_size: "20dp"
+									MDRectangleFlatButton:
+										text: "Search"
+										on_release:
+											root.searchComicBooks()
+								MDBoxLayout:
+									orientation: "horizontal"
+									size_hint: 1, 0.2
+									ScrollView:
+										do_scroll_y: False
+										size_hint: 1, 1
+										MDBoxLayout:
+											id: searchCheckBoxes
+											orientation: "horizontal"
+											size_hint: None, None
+											spacing: "10dp"
+											MDBoxLayout:
+												orientation: "horizontal"
+												size_hint: None, 1
+												size: "100dp", 0
+												CheckBox:
+													id: apcS
+													active: True
+												MDClickableLabel:
+													text: "apc"
+													on_release:
+														if apcS.active: apcS.active = False
+														else: apcS.active = True
+											MDBoxLayout:
+												orientation: "horizontal"
+												size_hint: None, 1
+												size: "100dp", 0
+												CheckBox:
+													id: bpcS
+													active: True
+												MDClickableLabel:
+													text: "bpc"
+													on_release:
+														if bpcS.active: bpcS.active = False
+														else: bpcS.active = True
+								MDRectangleFlatButton:
+									text: "View Downloaded Comics"
+									size_hint: 1, 1
+									on_release:
+										root.toDownloadComicsScreen()
+								MDRectangleFlatButton:
+									text: "View Favorited Comics"
+									size_hint: 1, 1
+									on_release:
+										root.toFavComicBookScreen()
+                MDScreen:
+					name: "settings"
+					MDAnchorLayout:
+						anchor_x: "center"
+						anchor_y: "center"
+						MDRectangleFlatButton:
+							text: "Choose Comic Download Location"
+							on_release:
+								root.fileManagerOpen()
+				MDScreen:
+					name: "tags"
+					MDLabel:
+						text: "Tags"
+				MDScreen:
+					name: "comic"
+					MDBoxLayout:
+						orientation: "vertical"
+						padding: "5dp"
+						TopAppBarPlaceholder:
+						BoxLayout:
+							id: hideComicsSection
+							orientation: "vertical"
+							ScrollView:
+								id: scrollCs
+								do_scroll_x: False
+								size_hint: 1, 1
+								MDGridLayout:
+									id: csGrid
+									cols: 4
+									spacing: "5dp"
+									size_hint: 1, None
+									row_default_height: (self.width - self.cols*self.spacing[0]) / self.cols
+									row_force_default: True
+						BoxLayout:
+							id: hideComicSection
+							orientation: "vertical"
+							spacing: "5dp"
+							MDBoxLayout:
+								orientation: "horizontal"
+								size_hint: 1, None
+								size: 0, "50dp"
+								padding: "6dp"
+								md_bg_color: 0.3, 0.3, 0.3, 1
+								MDAnchorLayout:
+									anchor_x: "center"
+									anchor_y: "top"
+									size_hint: 0.6, 1
+									MDBoxLayout:
+										orientation: "horizontal"
+										size_hint: 1, 1
+										MDIconButton:
+											icon: "book-open-variant"
+										ScrollView:
+											do_scroll_x: True
+											do_scroll_y: False
+											size_hint: 1, 1
+											MDBoxLayout:
+												id: chapterBox
+												orientation: "horizontal"
+												size_hint: None, 1
+												spacing: "5dp"
+							ScrollView:
+								id: scrollC
+								do_scroll_x: False
+								size_hint: 1, 1
+								MDGridLayout:
+									id: cGrid
+									cols: 4
+									spacing: "5dp"
+									size_hint: 1, None
+									row_default_height: (self.width - self.cols*self.spacing[0]) / self.cols
+									row_force_default: True
+					MDBoxLayout:
+						id: bl
+						Popup:
+							id: popup
+							title: ""
+							separator_height: 0
+							on_parent:
+								if self.parent == bl: self.parent.remove_widget(self)
+							AnchorLayout:
+								anchor_x: "right"
+								anchor_y: "top"
+								RelativeLayout:
+									Carousel:
+										id: carousel
+										direction: "right"
+										min_move: 0.01
+										on_index: root.slideChange()
+								MDBoxLayout:
+									orientation: "horizontal"
+									size_hint: 1, None
+									size: "150dp", "40dp"
+									MDLabel:
+										id: carouselLbl
+										text: ""
+										font_size: "30dp"
+										halign: "left"
+									MDIconButton:
+										icon: "arrow-left-circle"
+										md_bg_color: rgba(40, 40, 40, 255)
+										icon_size: "40dp"
+										on_release:
+											root.slideFirst()
+									MDIconButton:
+										icon: "close-circle"
+										md_bg_color: rgba(40, 40, 40, 255)
+										icon_size: "40dp"
+										on_release:
+											root.popup.dismiss()
+									MDIconButton:
+										icon: "arrow-right-circle"
+										md_bg_color: rgba(40, 40, 40, 255)
+										icon_size: "40dp"
+										on_release:
+											root.slideLast()
+            MDNavigationDrawer:
+				id: nav_drawer
+				MDNavigationDrawerMenu:
+					MDNavigationDrawerHeader:
+						title: "Comic Galleries"
+						title_color: 1, 1, 1, 1
+						#text: "Header text"
+						#spacing: "4dp"
+						padding: "12dp", 0, 0, "56dp"
+					DrawerClickableItem:
+						text: "Home"
+						text_color: "lightgrey"
+						on_release:
+							root.goToScreen("home")
+					DrawerClickableItem:
+						text: "Settings"
+						text_color: "lightgrey"
+						on_release:
+							root.goToScreen("settings")
+					DrawerClickableItem:
+						text: "Tags By Alphabet"
+						text_color: "lightgrey"
+						on_release:
+							root.goToScreen("tags")
+					MDNavigationDrawerLabel:
+						text: "Comic Sites"
+		MDAnchorLayout:
+			anchor_x: "right"
+			anchor_y: "bottom"
+			padding: "10dp"
+			MDFloatingActionButton:
+				id: flButton
+				icon: "screen-rotation"
+				md_bg_color: app.theme_cls.primary_color
+				on_release:
+					root.lockRotation()
